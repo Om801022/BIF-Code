@@ -1,0 +1,39 @@
+# DNA Sequence Analysis
+
+dna = "ATGCGATGAAATAGCGCGATGCCCTAA"
+
+# 1. Calculate sequence length
+print("DNA Sequence:", dna)
+print("Sequence Length:", len(dna))
+
+# 2. Calculate GC Content
+gc = dna.count("G") + dna.count("C")
+gc_content = (gc / len(dna)) * 100
+print("GC Content:", gc_content, "%")
+
+# 3. Find a motif
+motif = "ATG"
+print("Motif:", motif)
+print("Motif Position:", dna.find(motif))
+
+# 4. Find complementary sequence
+complement = dna.translate(
+    str.maketrans("ATGC", "TACG")
+)
+print("Complement:", complement)
+
+# 5. Identify coding regions (ORFs)
+start = dna.find("ATG")
+stop_codons = ["TAA", "TAG", "TGA"]
+
+if start != -1:
+    for i in range(start + 3, len(dna) - 2, 3):
+        codon = dna[i:i+3]
+
+        if codon in stop_codons:
+            print("Coding Region:", dna[start:i+3])
+            break
+    else:
+        print("No complete coding region found")
+else:
+    print("Start codon not found")
