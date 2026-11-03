@@ -1,0 +1,75 @@
+
+from vina import Vina
+
+# Create docking object
+v = Vina(sf_name="vina")
+
+# Load protein
+v.set_receptor("receptor.pdbqt")
+
+# Load ligand
+v.set_ligand_from_file("ligand.pdbqt")
+
+# Define binding site
+v.compute_vina_maps(
+    center=[10, 10, 10],
+    box_size=[20, 20, 20]
+)
+
+# Perform docking
+v.dock(exhaustiveness=8, n_poses=9)
+
+# Get docking results
+energy = v.energies(n_poses=9)
+
+print("Docking Results:")
+print(energy)
+
+# Save docking poses
+v.write_poses(
+    "docked_poses.pdbqt",
+    n_poses=9,
+    overwrite=True
+)
+
+print("Docking completed successfully!")
+
+
+from vina import Vina
+
+ligands = [
+    "ligand1.pdbqt",
+    "ligand2.pdbqt",
+    "ligand3.pdbqt"
+]
+
+results = []
+
+for ligand in ligands:
+
+    v = Vina(sf_name="vina")
+
+    v.set_receptor("receptor.pdbqt")
+
+    v.set_ligand_from_file(ligand)
+
+    v.compute_vina_maps(
+        center=[10, 10, 10],
+        box_size=[20, 20, 20]
+    )
+
+    v.dock(exhaustiveness=8, n_poses=9)
+
+    energy = v.energies(n_poses=1)[0][0]
+
+    results.append((ligand, energy))
+
+# Rank compounds
+results.sort(key=lambda x: x[1])
+
+print("Virtual Screening Results:")
+
+for ligand, score in results:
+    print(ligand, ":", score, "kcal/mol")
+
+print("Best potential lead:", results[0][0])
