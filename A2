@@ -1,0 +1,43 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create sample RNA-Seq dataset
+data = {
+    'Gene': ['Gene1', 'Gene2', 'Gene3', 'Gene4', 'Gene5'],
+    'Control': [100, 200, 150, 300, 250],
+    'Treatment': [300, 100, 150, 600, 100]
+}
+
+df = pd.DataFrame(data)
+
+# Calculate Log2 Fold Change
+df['Log2FC'] = np.log2(
+    (df['Treatment'] + 1) /
+    (df['Control'] + 1)
+)
+
+# Identify differentially expressed genes
+df['Expression'] = np.where(
+    df['Log2FC'] > 1, 'Upregulated',
+    np.where(df['Log2FC'] < -1,
+             'Downregulated', 'Unchanged')
+)
+
+print("RNA-Seq Analysis Results:")
+print(df)
+
+# Display upregulated genes
+print("\nUpregulated Genes:")
+print(df[df['Expression'] == 'Upregulated']['Gene'])
+
+# Display downregulated genes
+print("\nDownregulated Genes:")
+print(df[df['Expression'] == 'Downregulated']['Gene'])
+
+# Plot gene expression
+plt.bar(df['Gene'], df['Log2FC'])
+plt.xlabel("Genes")
+plt.ylabel("Log2 Fold Change")
+plt.title("Differential Gene Expression")
+plt.show()
